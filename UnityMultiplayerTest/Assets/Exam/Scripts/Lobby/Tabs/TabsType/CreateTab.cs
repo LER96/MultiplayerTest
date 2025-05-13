@@ -14,19 +14,14 @@ public class CreateTab : LobbyTab
     [SerializeField] TMP_Dropdown _dropDownTimerForRound;
     [SerializeField] Button _createRoom;
     
-    private int _numberOfPlayers;
+    [SerializeField] private int _numberOfPlayers;
     private int _timerForRound = 1;
     private bool _numberOfPlayersCheck;
-    private TMP_Dropdown _joinDropdown;
 
     public Button CreateRoomButton => _createRoom;
     public bool CanCreateRoom => _numberOfPlayersCheck;
     public int MaxPlayers => _numberOfPlayers;
     
-    private void Start()
-    {
-        SetDropDown();
-    }
     public override void OnCreatedRoom()
     {
         base.OnCreatedRoom();
@@ -44,6 +39,7 @@ public class CreateTab : LobbyTab
             if (roomName == _inputField.text)
             {
                 _inputField.text = "";
+                sameName = true;
             }
         }
 
@@ -52,8 +48,7 @@ public class CreateTab : LobbyTab
         {
             PhotonNetwork.CreateRoom(_inputField.text, new RoomOptions() { MaxPlayers = _numberOfPlayers, EmptyRoomTtl = 2000 },
                 null);
-            _joinDropdown = LobbyManager.Instance.JoinTabWindow.DropdownJoinList;
-            _joinDropdown.options.Add(new TMP_Dropdown.OptionData() { text = _inputField.text });
+            LobbyManager.Instance.JoinTabWindow.JoinList=_inputField.text;
         }
         else
         {

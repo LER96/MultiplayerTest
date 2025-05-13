@@ -5,12 +5,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.Serialization;
 
 public class JoinTab : LobbyTab
 {
-    [SerializeField] protected TMP_Dropdown _dropDownJoinList;
+    [FormerlySerializedAs("_dropDownJoinList")] [SerializeField] protected TMP_Dropdown dropDown;
     
-    public TMP_Dropdown DropdownJoinList => _dropDownJoinList;
+    public TMP_Dropdown Dropdown => dropDown;
+    public string JoinList { set=>AddToJoin(value);}
     
     public void JoinRoom()
     {
@@ -19,7 +21,12 @@ public class JoinTab : LobbyTab
     
     protected override void SetDropDown()
     {
-        _dropDownJoinList.onValueChanged.AddListener(delegate { SetJoinInput(_dropDownJoinList); });
+        dropDown.onValueChanged.AddListener(delegate { SetJoinInput(dropDown); });
+    }
+
+    void AddToJoin(string inputText)
+    {
+        dropDown.options.Add(new TMP_Dropdown.OptionData() { text = inputText});
     }
     
     public void SetJoinInput(TMP_Dropdown dropdown)
@@ -33,7 +40,7 @@ public class JoinTab : LobbyTab
     {
         base.OnJoinedRoom();
         LobbyManager.Instance.RefreshUI();
-        tabBTN.interactable = false;
+        _windowTab_BTN.interactable = false;
         LobbyManager.Instance.LeaveRoomButton.interactable = true;
     }
     

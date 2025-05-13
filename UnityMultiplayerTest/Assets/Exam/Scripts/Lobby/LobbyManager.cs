@@ -13,33 +13,13 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     
     public static LobbyManager Instance;
     
-    [Header("Log In")]
-    [SerializeField] GameObject _logInFather;
-    [SerializeField] Button _logInButton;
-
-    [Header("Input Name")]
-    [SerializeField] GameObject _inputNameFather;
-    [SerializeField] TMP_InputField _nicknameInputField;
-    [SerializeField] Button _enterRoomButton;
-
-    [Header("Create/Join Options")]
-    [SerializeField] GameObject _creatOrJoinFather;
-    
+    [Header("Handlers")]
+    [SerializeField] private WindowHandler _windowHandler;
     
     [Header("Tabs")]
     [SerializeField] private CreateTab _createTab;
     [SerializeField] private JoinTab _joinTab;
-    [SerializeField] private FilterTab _filterTab;
     
-
-    [Header("Filter ")]
-    [SerializeField] GameObject _filterFather;
-    [SerializeField] GameObject _roomsActiveFather;
-    [SerializeField] TMP_Dropdown _dropDownRandomJoinList;
-    [SerializeField] TMP_Dropdown _dropDownMaxPlayers;
-    [SerializeField] Button _filterJoinTabButton;
-    int _randomMaxPlayers;
-
     [Header("Info")]
     [SerializeField] Button _startGameButton;
     [SerializeField] Button _leaveRoomButton;
@@ -48,14 +28,13 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     List<RoomInfo> _roomsInfo = new List<RoomInfo>();
     List<string> _roomNames = new List<string>();
-    List<string> _namesInGame = new List<string>();
     string _startInput;
-    
-    public CreateTab CreateTabWindow=> _createTab;
+
+    public WindowHandler WindowHandler => _windowHandler;
     public JoinTab JoinTabWindow => _joinTab;
-    public FilterTab FilterTabWindow => _filterTab;
     public List<string> RoomNames => _roomNames;
     public Button LeaveRoomButton => _leaveRoomButton;
+    
 
     //make start game button not interactable at the start of the game.
     private void Awake()
@@ -66,27 +45,14 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         }
         
         StartUI();
-
-        //this.rounds = _numberOfRounds;
-        _startInput = _nicknameInputField.text;
         _startGameButton.interactable = false;
         _leaveRoomButton.interactable = false;
         
-
-        //Random DropDowns
-        _dropDownMaxPlayers.onValueChanged.AddListener(delegate { SetRandomMaxPlayers(_dropDownMaxPlayers); });
-        _dropDownRandomJoinList.onValueChanged.AddListener(delegate { SetRandomInput(_joinTab.DropdownJoinList); });
-
         PhotonNetwork.AutomaticallySyncScene = true;
     }
 
     private void Update()
     {
-        //If something is written in the input field
-        if (_nicknameInputField.text != "" || _nicknameInputField.text != _startInput)
-        {
-            _enterRoomButton.interactable = true;
-        }
         
         if (_createTab.CanCreateRoom)
         {
@@ -97,118 +63,26 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             _createTab.CreateRoomButton.interactable = true;
         }
     }
-
-    #region LogIn
-    public void LoginToPhoton()
-    {
-        PhotonNetwork.ConnectUsingSettings();
-    }
-    
-    public override void OnConnectedToMaster()
-    {
-        base.OnConnectedToMaster();
-        PhotonNetwork.JoinLobby();
-
-        //Disable login and activate input
-        _logInFather.SetActive(false);
-        _inputNameFather.SetActive(true);
-    }
-
-    //On log in press, add to list of names, log in to photon
-    public void TryConnect()
-    {
-        PhotonNetwork.NickName = _nicknameInputField.text;
-        if (SameName(_nicknameInputField.text) == false)
-        {
-            _namesInGame.Add(_nicknameInputField.text);
-
-            _inputNameFather.SetActive(false);
-            _creatOrJoinFather.SetActive(true);
-            CreateTabMenu();
-        }
-        else
-        {
-            _nicknameInputField.text = "";
-            _enterRoomButton.interactable = false;
-        }
-    }
-
-    //Check if there is otherPlayers with the same name
-    bool SameName(string currentName)
-    {
-        foreach (Player playerName in PhotonNetwork.PlayerList)
-        {
-            _namesInGame.Clear();
-            _namesInGame.Add(playerName.NickName);
-        }
-
-        if (_namesInGame.Count > 0)
-        {
-            foreach (string name in _namesInGame)
-            {
-                if (currentName.Equals(name))
-                {
-                    return true;
-                }
-            }
-        }
-        else
-            return false;
-
-        return false;
-    }
-    #endregion
     
     void StartUI()
     {
-        _logInFather.SetActive(true);
-        _inputNameFather.SetActive(false);
-        _creatOrJoinFather.SetActive(false);
+        _windowHandler.SetWindow(0);
+        _createTab.OnTabSelected();
     }
 
-    public void CreateTabMenu()
+    public void SetTabs(LobbyTab tab)
     {
-        _filterJoinTabButton.interactable = true;
+        if (tab==_createTab)
+        {
+            _joinTab.SetTab(false);
+        }
+        else
+        {
+            _createTab.SetTab(false);
+        }
     }
-
-    public void JoinTabMenu()
-    {
-        _filterFather.SetActive(false);
-        _roomsActiveFather.SetActive(true);
-        
-        _filterJoinTabButton.interactable = true;
-    }
-
-    public void FilterTabMenu()
-    {
-        _filterFather.SetActive(true);
-        _roomsActiveFather.SetActive(false);
-        
-        _filterJoinTabButton.interactable = false;
-    }
-
-    #region DropDown
     
-    public void SetRandomInput(TMP_Dropdown dropdown)
-    {
-        RefreshUI();
-        int i = dropdown.value;
-        //_joinRoomNameInputField.text = dropdown.options[i].text;
 
-        RefreshUI();
-    }
-
-    public void SetRandomMaxPlayers(TMP_Dropdown dropdown)
-    {
-        int i = dropdown.value;
-        _randomMaxPlayers = int.Parse(dropdown.options[i].text);
-        RefreshUI();
-    }
-    #endregion
-
-    #region Join
-    
-    #endregion
 
     #region Condition Rooms
 
@@ -221,7 +95,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         base.OnLeftRoom();
         PhotonNetwork.JoinLobby();
-        //_joinTabRoomButton.interactable = true;
         _leaveRoomButton.interactable = false;
         RefreshUI();
     }
@@ -276,11 +149,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     void ResetDrop()
     {
         _roomNames.Clear();
-        _joinTab.DropdownJoinList.options.Clear();
-        _dropDownRandomJoinList.options.Clear();
+        _joinTab.Dropdown.options.Clear();
+        //_dropDownRandomJoinList.options.Clear();
 
-        _dropDownRandomJoinList.options.Add(new TMP_Dropdown.OptionData() { text = "None" });
-        _joinTab.DropdownJoinList.options.Add(new TMP_Dropdown.OptionData() { text = "None" });
+        //_dropDownRandomJoinList.options.Add(new TMP_Dropdown.OptionData() { text = "None" });
+        _joinTab.JoinList="None";
     }
 
     //Orginize the room list drop down, checking if the current room isn't full
@@ -293,12 +166,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                 if (room.PlayerCount < room.MaxPlayers)
                 {
                     _roomNames.Add(room.Name);
-                    _joinTab.DropdownJoinList.options.Add(new TMP_Dropdown.OptionData() { text = room.Name });
-                    
-                    if(room.MaxPlayers== _randomMaxPlayers)
-                    {
-                        _dropDownRandomJoinList.options.Add(new TMP_Dropdown.OptionData() { text = room.Name });
-                    }
+                    _joinTab.JoinList=room.Name;
                     
                 }
             }
