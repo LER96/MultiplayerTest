@@ -104,9 +104,14 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         base.OnPlayerEnteredRoom(newPlayer);
         RefreshUI();
 
+        CheckRoom();
+    }
+
+    public void CheckRoom()
+    {
         if (PhotonNetwork.IsMasterClient)
         {
-            if (PhotonNetwork.CurrentRoom.PlayerCount == _createTab. MaxPlayers)
+            if (PhotonNetwork.CurrentRoom.PlayerCount == _createTab.MaxPlayers)
             {
                 _startGameButton.interactable = true;
             }

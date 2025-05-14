@@ -36,6 +36,10 @@ MonoBehaviour:
   RpcList:
   - ClickRpc
   - DestroyRpc
+  - AskSpawnPoint
+  - GameStarted
+  - SpawnPlayer
+  - Timer
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

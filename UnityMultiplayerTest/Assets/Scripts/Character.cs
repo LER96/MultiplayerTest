@@ -1,7 +1,10 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 
-    public enum ERotationBehavior
+public enum ERotationBehavior
     {
         OrientRotationToMovement,
         UseControlRotation
@@ -46,8 +49,8 @@ using UnityEngine;
         public float SphereCastDistance = 0.15f; // The distance below the character's capsule used for the sphere cast grounded check
     }
 
-    public class Character : MonoBehaviour
-    {
+    public class Character : MonoBehaviourPunCallbacks, IPunObservable
+{
         public Controller Controller; // The controller that controls the character
         public MovementSettings MovementSettings;
         public GravitySettings GravitySettings;
@@ -68,6 +71,10 @@ using UnityEngine;
         private bool _hasMovementInput;
         private bool _jumpInput;
 
+        private bool canWalk;
+
+    public bool CanWalk { get; set; }
+        
         public Vector3 Velocity => _characterController.velocity;
         public Vector3 HorizontalVelocity => _characterController.velocity.SetY(0.0f);
         public Vector3 VerticalVelocity => _characterController.velocity.Multiply(0.0f, 1.0f, 0.0f);
@@ -89,8 +96,11 @@ using UnityEngine;
 
         private void FixedUpdate()
         {
-            Tick(Time.deltaTime);
-            Controller.OnCharacterFixedUpdate();
+            if (canWalk)
+            {
+                Tick(Time.deltaTime);
+             Controller.OnCharacterFixedUpdate();
+            }
         }
 
         private void Tick(float deltaTime)
@@ -235,5 +245,33 @@ using UnityEngine;
                 transform.rotation = targetRotation;
             }
         }
+
+
+    public virtual void StartingPoint(Vector3 pos)
+    {
+        transform.position = pos;
     }
+
+    public virtual void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(transform.position);
+        }
+        else
+        {
+            transform.position = (Vector3)stream.ReceiveNext();
+        }
+    }
+
+    public virtual void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+        if (info.photonView.IsMine)
+        {
+            SpawnManager.Instance.SetPlayerController(this);
+        }
+        SpawnManager.Instance.AddPlayerController(this);
+    }
+}
+
 

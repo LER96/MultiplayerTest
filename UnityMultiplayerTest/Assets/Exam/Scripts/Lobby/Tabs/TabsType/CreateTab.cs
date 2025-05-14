@@ -28,6 +28,7 @@ public class CreateTab : LobbyTab
         Debug.Log("We are in a room!");
         LobbyManager.Instance.roomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { "Time", _timerForRound } });
+        LobbyManager.Instance.CheckRoom();
         LobbyManager.Instance.RefreshUI();
     }
     
@@ -46,9 +47,9 @@ public class CreateTab : LobbyTab
         //If there isn't a room with the same name, then cre
         if (sameName == false)
         {
-            PhotonNetwork.CreateRoom(_inputField.text, new RoomOptions() { MaxPlayers = _numberOfPlayers, EmptyRoomTtl = 2000 },
-                null);
+            PhotonNetwork.CreateRoom(_inputField.text, new RoomOptions() { MaxPlayers = _numberOfPlayers, EmptyRoomTtl = 2000 },null);
             LobbyManager.Instance.JoinTabWindow.JoinList=_inputField.text;
+            
         }
         else
         {
