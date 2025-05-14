@@ -50,7 +50,8 @@ public enum ERotationBehavior
     }
 
     public class Character : MonoBehaviourPunCallbacks, IPunObservable
-{
+    {
+        [SerializeField] 
         public Controller Controller; // The controller that controls the character
         public MovementSettings MovementSettings;
         public GravitySettings GravitySettings;
@@ -71,7 +72,8 @@ public enum ERotationBehavior
         private bool _hasMovementInput;
         private bool _jumpInput;
 
-        private bool canWalk;
+        [SerializeField] private bool canWalk;
+        PhotonView _photonView;
 
     public bool CanWalk { get; set; }
         
@@ -80,14 +82,14 @@ public enum ERotationBehavior
         public Vector3 VerticalVelocity => _characterController.velocity.Multiply(0.0f, 1.0f, 0.0f);
         public bool IsGrounded { get; private set; }
 
-        private void Awake()
-        {
-            Controller.Init();
-            Controller.Character = this;
-
-            _characterController = GetComponent<CharacterController>();
-            _characterAnimator = GetComponent<CharacterAnimator>();
-        }
+    private void Awake()
+    {
+        Controller.Init();
+        Controller.Character = this;
+        _characterController = GetComponent<CharacterController>();
+        _characterAnimator = GetComponent<CharacterAnimator>();
+        canWalk = true;
+    }
 
         private void Update()
         {
@@ -99,7 +101,7 @@ public enum ERotationBehavior
             if (canWalk)
             {
                 Tick(Time.deltaTime);
-             Controller.OnCharacterFixedUpdate();
+                Controller.OnCharacterFixedUpdate();
             }
         }
 
@@ -269,6 +271,8 @@ public enum ERotationBehavior
         if (info.photonView.IsMine)
         {
             SpawnManager.Instance.SetPlayerController(this);
+            Controller.Character = this;
+            return;
         }
         SpawnManager.Instance.AddPlayerController(this);
     }

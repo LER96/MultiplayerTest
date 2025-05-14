@@ -1,8 +1,9 @@
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 
-    public class PlayerInputComponent : MonoBehaviour
+    public class PlayerInputComponent : MonoBehaviourPunCallbacks
     {
         public bool isPressed;
         public Vector2 MoveInput { get; private set; }
@@ -13,7 +14,8 @@ using UnityEngine.InputSystem;
         
         public bool InteractInput { get; private set; }
 
-        public void OnMoveEvent(InputAction.CallbackContext context)
+
+    public void OnMoveEvent(InputAction.CallbackContext context)
         {
             Vector2 moveInput = context.ReadValue<Vector2>();
 

@@ -5,8 +5,8 @@ using UnityEngine;
     {
         public float ControlRotationSensitivity = 1.0f;
 
-        private PlayerInputComponent _playerInput;
-        private PlayerCamera _playerCamera;
+        [SerializeField] private PlayerInputComponent _playerInput;
+        [SerializeField] private PlayerCamera _playerCamera;
 
         public override void Init()
         {

@@ -70,28 +70,30 @@ public class SpawnManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsConnectedAndReady)
         {
+            if(!photonView.IsMine)
+            {
+                Camera.main.gameObject.SetActive(false);
+            }
             //if (PhotonNetwork.IsMasterClient)
             //{
             //    _startGame.interactable = true;
             //    _canvasStartGame.SetActive(true);
-            //}
-            //else
-            //{
-            //    _canvasStartGame.SetActive(false);
+            //    photonView.RPC(ASK_SPAWN_POINT_RPC, RpcTarget.MasterClient);
             //}
 
             photonView.RPC(ASK_SPAWN_POINT_RPC, RpcTarget.MasterClient);
-            StartGame();
+            //StartGame();
         }
     }
 
     public void StartGame()
     {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            photonView.RPC(START_GAME_TIMER, RpcTarget.MasterClient);
-            //_canvasStartGame.SetActive(false);
-        }
+        //photonView.RPC(START_GAME_TIMER, RpcTarget.All);
+        //if (PhotonNetwork.IsMasterClient)
+        //{
+        //    photonView.RPC(START_GAME_TIMER, RpcTarget.MasterClient);
+        //    //_canvasStartGame.SetActive(false);
+        //}
 
     }
 
@@ -151,16 +153,6 @@ public class SpawnManager : MonoBehaviourPunCallbacks
     {
         SpawnPoint spawnPoint = GetSpawnPointByID(spawnPointID);
         _characterName=_characterPreFab.gameObject.name;
-        //string characterName = (string)PhotonNetwork.LocalPlayer.CustomProperties["Character"];
-        //_characterTeam = (string)PhotonNetwork.LocalPlayer.CustomProperties["Team"];
-
-        /*foreach (GameObject characterPrefab in _characterPreFab)
-        {
-            if (characterPrefab.name == characterName)
-            {
-                playerToSpawn = characterPrefab;
-            }
-        }*/
 
         SetPlayerControllerByType(_characterPreFab, spawnPoint);
 
@@ -176,6 +168,10 @@ public class SpawnManager : MonoBehaviourPunCallbacks
         _localPlayerController = PhotonNetwork.Instantiate(playerToSpawn.name,
                          spawnPoint.transform.position,
                          spawnPoint.transform.rotation).GetComponent<Character>();
+
+        //_localPlayerController = player.GetComponent<Character>();
+
+
         _localPlayerController.StartingPoint(spawnPoint.transform.position);
         AddPlayerController(_localPlayerController);
     }
