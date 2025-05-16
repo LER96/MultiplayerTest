@@ -1,3 +1,4 @@
+using Photon.Pun;
 using UnityEngine;
     public  enum BoxStatus
     {
@@ -5,7 +6,7 @@ using UnityEngine;
         PickedUp
     }
 
-public abstract  class BoxBase : MonoBehaviour,IInteractable
+public abstract  class BoxBase : MonoBehaviourPunCallbacks,IInteractable
 {
     
     public BoxStatus Status { get; protected set; } = BoxStatus.Idle;

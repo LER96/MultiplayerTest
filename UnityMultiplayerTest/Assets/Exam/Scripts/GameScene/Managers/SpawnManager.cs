@@ -5,6 +5,7 @@ using Photon.Pun;
 using TMPro;
 using UnityEngine.UI;
 using Photon.Realtime;
+using TMPro.Examples;
 
 public class SpawnManager : MonoBehaviourPunCallbacks
 {
@@ -16,7 +17,7 @@ public class SpawnManager : MonoBehaviourPunCallbacks
     //RPC
     private const string GAME_STARTED_RPC = nameof(GameStarted);
     private const string START_GAME_TIMER = nameof(Timer);
-    const string ASK_SPAWN_POINT_RPC = nameof(AskSpawnPoint);
+    const string ASK_SPAWN_POINT_RPC = nameof(AskSpawnComponents);
     const string SPAWN_PLAYER_CLIENT_RPC = nameof(SpawnPlayer);
 
     public bool hasGameStarted = false;
@@ -70,10 +71,10 @@ public class SpawnManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsConnectedAndReady)
         {
-            if(!photonView.IsMine)
-            {
-                Camera.main.gameObject.SetActive(false);
-            }
+            //if(!photonView.IsMine)
+            //{
+            //    Camera.main.gameObject.SetActive(false);
+            //}
             //if (PhotonNetwork.IsMasterClient)
             //{
             //    _startGame.interactable = true;
@@ -113,7 +114,7 @@ public class SpawnManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void AskSpawnPoint(PhotonMessageInfo messageInfo)
+    void AskSpawnComponents(PhotonMessageInfo messageInfo)
     {
         List<SpawnPoint> availableSpawnPoints = new List<SpawnPoint>();
 
@@ -125,6 +126,7 @@ public class SpawnManager : MonoBehaviourPunCallbacks
 
         SpawnPoint chosenSpawnPoint =
             availableSpawnPoints[Random.Range(0, availableSpawnPoints.Count)];
+
         chosenSpawnPoint.taken = true;
 
         bool[] takenSpawnPoints = new bool[_spawnPoints.Length];
@@ -169,11 +171,14 @@ public class SpawnManager : MonoBehaviourPunCallbacks
                          spawnPoint.transform.position,
                          spawnPoint.transform.rotation).GetComponent<Character>();
 
+
+        _localPlayerController.SetCharacterVariables(spawnPoint.PlayerInput, spawnPoint.Camera);
         //_localPlayerController = player.GetComponent<Character>();
 
 
         _localPlayerController.StartingPoint(spawnPoint.transform.position);
         AddPlayerController(_localPlayerController);
+        spawnPoint.ActiveComponents();
     }
 
     //Need to check if the property of the player is match to the spawn state

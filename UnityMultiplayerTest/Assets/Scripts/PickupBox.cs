@@ -6,6 +6,7 @@ public class PickupBox : BoxBase
     private Transform originalParent;
     
     [SerializeField]private Rigidbody originalRigidBody;
+    private PlayerInteraction _currentInteractor;
 
     private void Awake()
     {
@@ -22,6 +23,11 @@ public class PickupBox : BoxBase
         {
             Drop(interactor);
         }
+        else if(Status == BoxStatus.PickedUp && interactor.IsHolding(this)==false)
+        {
+            Drop(_currentInteractor);
+            PickUp(interactor);
+        }
     }
 
     private void PickUp(PlayerInteraction interactor)
@@ -31,6 +37,7 @@ public class PickupBox : BoxBase
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;
         originalRigidBody.isKinematic = true;
+        _currentInteractor = interactor;
         interactor.HoldBox(this);
     }
 
@@ -40,6 +47,7 @@ public class PickupBox : BoxBase
         transform.SetParent(originalParent);
         originalRigidBody.isKinematic = false;
         interactor.DropBox();
+        _currentInteractor = null;
     }
 
 }
