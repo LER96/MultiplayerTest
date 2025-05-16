@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using static Controller;
     //[CreateAssetMenu(fileName = "PlayerController", menuName = "NaughtyCharacter/PlayerController")]
     public class PlayerController : Controller
@@ -49,6 +50,9 @@ using static Controller;
         // Adjust the yaw angle (Y Rotation)
         float yawAngle = controlRotation.y;
         yawAngle += camInput.x * ControlRotationSensitivity;
+
+        controlRotation = new Vector2(pitchAngle, yawAngle);
+        Character.SetControlRotation(controlRotation);
     }
 
     private Vector3 GetMovementInput()

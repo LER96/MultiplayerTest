@@ -258,6 +258,7 @@ public class Character : MonoBehaviourPunCallbacks, IPunObservable, IPunInstanti
         {
             Controller.playerCamera = camera;
             Controller.playerInput = input;
+            Controller.playerInput.View = _photonView;
         }
     }
 

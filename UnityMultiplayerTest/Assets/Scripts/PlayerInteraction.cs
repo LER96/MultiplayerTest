@@ -1,22 +1,26 @@
+using Photon.Pun;
 using System;
 using UnityEngine;
 
-public class PlayerInteraction : MonoBehaviour
+public class PlayerInteraction : MonoBehaviourPunCallbacks
 {
     public Transform holdPoint;
     public float interactRange = 2f;
     private PickupBox heldBox;
     private PickupBox nearbyBox;
     private int currentScore = 0;
+    private PhotonView _view;
     
     public void HoldBox(PickupBox box) => heldBox = box;
     public void DropBox() => heldBox = null;
     public bool IsHolding(PickupBox box) => heldBox == box;
-    public bool Holding => heldBox != null; 
+    public bool Holding => heldBox != null;
 
     private void Start()
     {
-        GameManager.Instance.RegisterPlayer(this);
+        _view = GetComponent<PhotonView>();
+        if (_view.IsMine)
+            GameManager.Instance.RegisterPlayer(this);
     }
 
     public void OnEnterPickupZone(PickupBox box)

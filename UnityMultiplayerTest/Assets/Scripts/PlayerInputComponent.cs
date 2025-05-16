@@ -13,14 +13,10 @@ public class PlayerInputComponent : MonoBehaviourPunCallbacks
     public bool HasMoveInput { get; private set; }
 
     public bool InteractInput { get; private set; }
+    public PhotonView View {  get=> _view; set=> _view=value; }
 
     private bool isPressed;
     private PhotonView _view;
-
-    private void Start()
-    {
-        _view = GetComponent<PhotonView>();
-    }
 
 
     public void OnMoveEvent(InputAction.CallbackContext context)
