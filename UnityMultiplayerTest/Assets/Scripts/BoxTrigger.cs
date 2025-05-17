@@ -1,16 +1,22 @@
+using Photon.Pun;
 using UnityEngine;
+using UnityEngine.UIElements;
 
-public class BoxTrigger : MonoBehaviour
+public class BoxTrigger : MonoBehaviourPunCallbacks
 {
     [SerializeField]PickupBox pickupBox;
+    [SerializeField] PlayerInteraction interaction;
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            PlayerInteraction interaction = other.GetComponent<PlayerInteraction>();
+            interaction = other.GetComponent<PlayerInteraction>();
             if (interaction != null)
             {
-                interaction.OnEnterPickupZone(pickupBox);
+                if (!pickupBox.taken)
+                {
+                    interaction.OnEnterPickupZone(pickupBox);
+                }
             }
         }
     }
@@ -18,7 +24,7 @@ public class BoxTrigger : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            PlayerInteraction interaction = other.GetComponent<PlayerInteraction>();
+            interaction = other.GetComponent<PlayerInteraction>();
             if (interaction != null)
             {
                 interaction.OnExitPickupZone(pickupBox);

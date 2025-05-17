@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.UIElements;
 
 
 public enum ERotationBehavior
@@ -74,9 +75,11 @@ public class Character : MonoBehaviourPunCallbacks, IPunObservable, IPunInstanti
     private bool _jumpInput;
 
     [SerializeField] private bool canWalk;
-    PhotonView _photonView;
+    private PhotonView _photonView;
+    private Vector3 _currentPos;
+    private Quaternion _currentRotation;
 
-    public bool CanWalk { get; set; }
+    public bool CanWalk { get=> canWalk; set=> canWalk=value; }
 
     public Vector3 Velocity => _characterController.velocity;
     public Vector3 HorizontalVelocity => _characterController.velocity.SetY(0.0f);
@@ -90,13 +93,20 @@ public class Character : MonoBehaviourPunCallbacks, IPunObservable, IPunInstanti
         _characterController = GetComponent<CharacterController>();
         _characterAnimator = GetComponent<CharacterAnimator>();
         _photonView = GetComponent<PhotonView>();
-        canWalk = true;
+        //canWalk = true;
     }
 
     private void Update()
     {
         if (Controller.HasComponents())
             Controller.OnCharacterUpdate();
+
+        if (!_photonView.IsMine)
+        {
+            transform.position = Vector3.Lerp(transform.position, _currentPos, .1f);
+            transform.rotation = Quaternion.Lerp(transform.rotation, _currentRotation, Time.deltaTime);
+
+        }
     }
 
     private void FixedUpdate()
@@ -272,10 +282,12 @@ public class Character : MonoBehaviourPunCallbacks, IPunObservable, IPunInstanti
         if (stream.IsWriting)
         {
             stream.SendNext(transform.position);
+            stream.SendNext(transform.rotation);
         }
         else
         {
-            transform.position = (Vector3)stream.ReceiveNext();
+            _currentPos = (Vector3)stream.ReceiveNext();
+            _currentRotation = (Quaternion)stream.ReceiveNext();
         }
     }
 

@@ -15,6 +15,7 @@ public class PlayerInteraction : MonoBehaviourPunCallbacks
     public void DropBox() => heldBox = null;
     public bool IsHolding(PickupBox box) => heldBox == box;
     public bool Holding => heldBox != null;
+    public PhotonView View => _view;
 
     private void Start()
     {
@@ -32,6 +33,11 @@ public class PlayerInteraction : MonoBehaviourPunCallbacks
         }
     }
 
+    public void OnEnterDeliverZone(PickupBox box)
+    {
+        UIManager.Instance.ShowBoxMenu(true);
+    }
+
     public void OnExitPickupZone(PickupBox box)
     {
         if (IsHolding(box)) return;
@@ -43,9 +49,16 @@ public class PlayerInteraction : MonoBehaviourPunCallbacks
     {
         if (nearbyBox != null)
         {
-            nearbyBox.Interact(this);
-            UIManager.Instance.ShowButtonsForState(true);
-            //UI?
+            if (nearbyBox.taken == false)
+            {
+                nearbyBox.Interact(this);
+                UIManager.Instance.ShowButtonsForState(true);
+            }
+            else
+            {
+                nearbyBox.Interact(this);
+                UIManager.Instance.ShowGive(true);
+            }
         }
     }
 

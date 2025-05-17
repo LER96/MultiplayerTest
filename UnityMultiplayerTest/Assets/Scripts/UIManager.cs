@@ -55,6 +55,7 @@ public class UIManager : MonoBehaviour
         boxMenuPanel.SetActive(show);
     }
 
+
     public void HideAllBoxButtons()
     {
         ShowPickupButton(false);
@@ -66,6 +67,13 @@ public class UIManager : MonoBehaviour
     {
         ShowPickupButton(!isHoldingBox);
         ShowDropButton(isHoldingBox);
+    }
+
+    public void ShowGive(bool give)
+    {
+        ShowDropButton(give);
+        ShowPickupButton(!give);
+        ShowGiveButton(!give);
     }
 
     public void HideEverything()

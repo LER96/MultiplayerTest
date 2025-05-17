@@ -83,7 +83,6 @@ public class SpawnManager : MonoBehaviourPunCallbacks
             //}
 
             photonView.RPC(ASK_SPAWN_POINT_RPC, RpcTarget.MasterClient);
-            //StartGame();
         }
     }
 

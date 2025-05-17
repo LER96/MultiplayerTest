@@ -649,7 +649,6 @@ GameObject:
   m_Component:
   - component: {fileID: 829547338}
   - component: {fileID: 829547339}
-  - component: {fileID: 829547340}
   m_Layer: 0
   m_Name: UIManager
   m_TagString: Untagged
@@ -689,28 +688,6 @@ MonoBehaviour:
   dropButton: {fileID: 1117867527}
   giveButton: {fileID: 1375977552}
   scoreText: {fileID: 2036320983}
---- !u!114 &829547340
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 829547337}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 2
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!1 &832239340
 GameObject:
   m_ObjectHideFlags: 0
@@ -1278,6 +1255,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3323842188247133457, guid: 46441259030e56741ab42fb313b76119,
+        type: 3}
+      propertyPath: sceneViewId
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4848519906477943212, guid: 46441259030e56741ab42fb313b76119,
+        type: 3}
+      propertyPath: m_PositionModel.TeleportEnabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4848519906477943212, guid: 46441259030e56741ab42fb313b76119,
+        type: 3}
+      propertyPath: m_PositionModel.ExtrapolateOption
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4848519906477943212, guid: 46441259030e56741ab42fb313b76119,
+        type: 3}
+      propertyPath: m_RotationModel.SynchronizeEnabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7036288869676412414, guid: 46441259030e56741ab42fb313b76119,
         type: 3}
       propertyPath: sceneViewId
@@ -1344,63 +1341,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: 1413268017377838143, guid: 46441259030e56741ab42fb313b76119, type: 3}
+    - {fileID: 4848519906477943212, guid: 46441259030e56741ab42fb313b76119, type: 3}
+    - {fileID: 2986517324877608190, guid: 46441259030e56741ab42fb313b76119, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 46441259030e56741ab42fb313b76119, type: 3}
---- !u!1 &2055412597 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7516298967014532233, guid: 46441259030e56741ab42fb313b76119,
-    type: 3}
-  m_PrefabInstance: {fileID: 2055412596}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2055412598
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2055412597}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 0
-  m_TeleportEnabled: 1
-  m_TeleportIfDistanceGreaterThan: 0.3
---- !u!114 &2055412599
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2055412597}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8efc6b1d64977384eb3405357896c656, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PositionModel:
-    SynchronizeEnabled: 1
-    TeleportEnabled: 1
-    TeleportIfDistanceGreaterThan: 0.2
-    InterpolateOption: 2
-    InterpolateMoveTowardsSpeed: 1
-    InterpolateLerpSpeed: 1
-    ExtrapolateOption: 0
-    ExtrapolateSpeed: 1
-    ExtrapolateIncludingRoundTripTime: 1
-    ExtrapolateNumberOfStoredPositions: 1
-  m_RotationModel:
-    SynchronizeEnabled: 1
-    InterpolateOption: 1
-    InterpolateRotateTowardsSpeed: 180
-    InterpolateLerpSpeed: 5
-  m_ScaleModel:
-    SynchronizeEnabled: 0
-    InterpolateOption: 0
-    InterpolateMoveTowardsSpeed: 1
-    InterpolateLerpSpeed: 0
 --- !u!1001 &2056451178
 PrefabInstance:
   m_ObjectHideFlags: 0
