@@ -16,8 +16,8 @@ public abstract  class BoxBase : MonoBehaviourPunCallbacks ,IPunObservable,IInte
 {
     
     public BoxStatus Status { get; protected set; } = BoxStatus.Idle;
-    
-    public abstract void Interact(PlayerInteraction interactor);
+
+    public abstract void Interact(int interactor);
 
 
     public virtual void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

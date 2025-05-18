@@ -155,9 +155,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         _roomNames.Clear();
         _joinTab.Dropdown.options.Clear();
-        //_dropDownRandomJoinList.options.Clear();
-
-        //_dropDownRandomJoinList.options.Add(new TMP_Dropdown.OptionData() { text = "None" });
         _joinTab.JoinList="None";
     }
 

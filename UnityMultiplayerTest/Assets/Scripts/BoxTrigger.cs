@@ -6,6 +6,7 @@ public class BoxTrigger : MonoBehaviourPunCallbacks
 {
     [SerializeField]PickupBox pickupBox;
     [SerializeField] PlayerInteraction interaction;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -13,10 +14,7 @@ public class BoxTrigger : MonoBehaviourPunCallbacks
             interaction = other.GetComponent<PlayerInteraction>();
             if (interaction != null)
             {
-                if (!pickupBox.taken)
-                {
-                    interaction.OnEnterPickupZone(pickupBox);
-                }
+                interaction.OnEnterPickupZone(pickupBox);
             }
         }
     }

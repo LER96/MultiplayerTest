@@ -43,6 +43,10 @@ MonoBehaviour:
   - AskSpawnComponents
   - Drop
   - PickUp
+  - Interact
+  - OnInteract
+  - OnGameEnded
+  - GameEnded
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

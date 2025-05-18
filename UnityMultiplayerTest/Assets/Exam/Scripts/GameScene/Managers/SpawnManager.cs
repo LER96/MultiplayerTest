@@ -16,6 +16,7 @@ public class SpawnManager : MonoBehaviourPunCallbacks
 
     //RPC
     private const string GAME_STARTED_RPC = nameof(GameStarted);
+    private const string GAME_ENDED_RPC= nameof(GameEnded);
     private const string START_GAME_TIMER = nameof(Timer);
     const string ASK_SPAWN_POINT_RPC = nameof(AskSpawnComponents);
     const string SPAWN_PLAYER_CLIENT_RPC = nameof(SpawnPlayer);
@@ -35,7 +36,7 @@ public class SpawnManager : MonoBehaviourPunCallbacks
     [SerializeField] List<Character> playerControllers = new List<Character>();
     Character _localPlayerController;
 
-    bool _isCountingForStartGame;
+    [SerializeField] bool _isCountingForStartGame;
     float _timeLeftForStartGame = 0;
 
 
@@ -71,16 +72,11 @@ public class SpawnManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsConnectedAndReady)
         {
-            //if(!photonView.IsMine)
-            //{
-            //    Camera.main.gameObject.SetActive(false);
-            //}
-            //if (PhotonNetwork.IsMasterClient)
-            //{
-            //    _startGame.interactable = true;
-            //    _canvasStartGame.SetActive(true);
-            //    photonView.RPC(ASK_SPAWN_POINT_RPC, RpcTarget.MasterClient);
-            //}
+            if (PhotonNetwork.IsMasterClient)
+            {
+                UIManager.Instance.SetStartGame(true);
+                //photonView.RPC(ASK_SPAWN_POINT_RPC, RpcTarget.MasterClient);
+            }
 
             photonView.RPC(ASK_SPAWN_POINT_RPC, RpcTarget.MasterClient);
         }
@@ -89,12 +85,17 @@ public class SpawnManager : MonoBehaviourPunCallbacks
     public void StartGame()
     {
         //photonView.RPC(START_GAME_TIMER, RpcTarget.All);
-        //if (PhotonNetwork.IsMasterClient)
-        //{
-        //    photonView.RPC(START_GAME_TIMER, RpcTarget.MasterClient);
-        //    //_canvasStartGame.SetActive(false);
-        //}
+        if (PhotonNetwork.IsMasterClient)
+        {
+            photonView.RPC(START_GAME_TIMER, RpcTarget.MasterClient);
+            UIManager.Instance.SetStartGame(false);
+        }
 
+    }
+
+    public void GameOver()
+    {
+        photonView.RPC(GAME_ENDED_RPC, RpcTarget.AllViaServer);
     }
 
     [PunRPC]
@@ -103,6 +104,12 @@ public class SpawnManager : MonoBehaviourPunCallbacks
         hasGameStarted = true;
         _localPlayerController.CanWalk = true;
         _isCountingForStartGame = false;
+    }
+
+    [PunRPC]
+    void GameEnded(PhotonMessageInfo info)
+    {
+        _localPlayerController.CanWalk = false;
     }
 
     [PunRPC]

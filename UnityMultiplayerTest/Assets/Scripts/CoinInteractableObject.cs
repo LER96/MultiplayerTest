@@ -1,12 +1,14 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CoinInteractableObject : MonoBehaviour
+public class CoinInteractableObject : MonoBehaviourPunCallbacks, IPunObservable
 {
-[   Header("Coin Setting")]
+    [Header("Coin Setting")]
     [SerializeField] private int value = 1;
 
+    private const string ON_COIN_COLLECT = nameof(OnInteract);
     private bool _isActive;
 
     public bool IsActive => _isActive;
@@ -23,22 +25,36 @@ public class CoinInteractableObject : MonoBehaviour
         _isActive = false;
         gameObject.SetActive(false);
     }
-    public void OnInteract(PlayerInteraction interactor)
+    public void OnInteract(PlayerInteraction interaction)
     {
         ///Give points
-        interactor.AddCoins(value);
+        interaction.AddCoins(value);
         DisableCoin();
     }
     
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("Player"))
+        if(other.CompareTag("Player"))
         {
             PlayerInteraction interaction = other.GetComponent<PlayerInteraction>();
             if (interaction != null)
             {
                 OnInteract(interaction);
             }
+        }
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if(stream.IsWriting)
+        {
+            stream.SendNext(_isActive);
+            stream.SendNext(transform.position);
+        }
+        else
+        {
+            gameObject.SetActive((bool)stream.ReceiveNext());
+            transform.position= (Vector3)stream.ReceiveNext();
         }
     }
 }

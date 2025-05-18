@@ -1,8 +1,9 @@
+using Photon.Pun;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class CoinSpawnManager : MonoBehaviour
+public class CoinSpawnManager :MonoBehaviourPunCallbacks
 {
     [Header("References")]
     [SerializeField] private List<CoinInteractableObject> interactableCoins;

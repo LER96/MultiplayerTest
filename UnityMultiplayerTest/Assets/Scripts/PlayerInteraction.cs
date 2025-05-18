@@ -51,12 +51,14 @@ public class PlayerInteraction : MonoBehaviourPunCallbacks
         {
             if (nearbyBox.taken == false)
             {
-                nearbyBox.Interact(this);
+                //nearbyBox.Interact(this);
+                nearbyBox.View.RPC("Interact", RpcTarget.AllViaServer, _view.ViewID);
                 UIManager.Instance.ShowButtonsForState(true);
             }
             else
             {
-                nearbyBox.Interact(this);
+                //nearbyBox.Interact(this);
+                nearbyBox.View.RPC("Interact", RpcTarget.AllViaServer, _view.ViewID);
                 UIManager.Instance.ShowGive(true);
             }
         }
@@ -66,7 +68,8 @@ public class PlayerInteraction : MonoBehaviourPunCallbacks
     {
         if (heldBox != null)
         {
-            heldBox.Interact(this);
+            //heldBox.Interact(this);
+            nearbyBox.View.RPC("Interact", RpcTarget.AllViaServer, _view.ViewID);
             UIManager.Instance.ShowButtonsForState(false);
             UIManager.Instance.HideEverything();
         }
@@ -75,6 +78,7 @@ public class PlayerInteraction : MonoBehaviourPunCallbacks
     public void AddCoins(int amount)
     {
         currentScore += amount;
+        View.Owner.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { "Score", currentScore } });
         UIManager.Instance.UpdateScore(currentScore);
     }
 }

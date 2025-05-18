@@ -98,7 +98,7 @@ public class Character : MonoBehaviourPunCallbacks, IPunObservable, IPunInstanti
 
     private void Update()
     {
-        if (Controller.HasComponents())
+        if (Controller.HasComponents() && canWalk)
             Controller.OnCharacterUpdate();
 
         if (!_photonView.IsMine)
@@ -111,7 +111,7 @@ public class Character : MonoBehaviourPunCallbacks, IPunObservable, IPunInstanti
 
     private void FixedUpdate()
     {
-        if (Controller.HasComponents())
+        if (Controller.HasComponents() && canWalk)
         {
             Tick(Time.deltaTime);
             Controller.OnCharacterFixedUpdate();

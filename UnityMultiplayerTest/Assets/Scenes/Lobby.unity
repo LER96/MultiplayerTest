@@ -4521,6 +4521,7 @@ MonoBehaviour:
   _dropDownTimerForRound: {fileID: 547686876}
   _createRoom: {fileID: 203556860}
   _numberOfPlayers: 0
+  _timerForRound: 1
 --- !u!114 &863599362
 MonoBehaviour:
   m_ObjectHideFlags: 0

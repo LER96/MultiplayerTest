@@ -9,7 +9,7 @@ using UnityEngine.Serialization;
 
 public class JoinTab : LobbyTab
 {
-    [FormerlySerializedAs("_dropDownJoinList")] [SerializeField] protected TMP_Dropdown dropDown;
+    [SerializeField] protected TMP_Dropdown dropDown;
     
     public TMP_Dropdown Dropdown => dropDown;
     public string JoinList { set=>AddToJoin(value);}

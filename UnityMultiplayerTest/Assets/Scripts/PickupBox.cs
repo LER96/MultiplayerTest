@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine.UI;
 using System;
 
+
 public class PickupBox : BoxBase
 {
     
@@ -16,12 +17,10 @@ public class PickupBox : BoxBase
     [SerializeField] private PlayerInteraction _currentInteractor;
     public bool taken;
 
-    private const string ON_DROP_RPC = nameof(Drop);
-    private const string ON_PICKUP_RPC= nameof(PickUp);
-
     private PhotonView _view;
     private Vector3 _position;
 
+    public PhotonView View=> _view;
     public PlayerInteraction CurrentHolder=> _currentInteractor;
     private void Awake()
     {
@@ -33,34 +32,35 @@ public class PickupBox : BoxBase
         _view = GetComponent<PhotonView>();
     }
 
-    private void Update()
-    {
-        if (!_view.IsMine)
-            transform.position = Vector3.Lerp(transform.position, _position, Time.deltaTime);
-    }
+    //private void Update()
+    //{
+    //    if (!_view.IsMine)
+    //        transform.position = Vector3.Lerp(transform.position, _position, .1f);
 
-    
+        
+    //}
 
-    public override void Interact(PlayerInteraction interactor)
+    [PunRPC]
+    public override void Interact(int playerViewID)
     {
-        if (Status == BoxStatus.Idle)
+        PhotonView playerView = PhotonView.Find(playerViewID);
+        PlayerInteraction interactor = playerView.GetComponent<PlayerInteraction>();
+        if (Status == BoxStatus.Idle && taken==false)
         {
-            //_view.RPC(ON_PICKUP_RPC, RpcTarget.All, interactor);
             PickUp(interactor);
         }
         else if (Status == BoxStatus.PickedUp && interactor.IsHolding(this))
         {
-            //_view.RPC(ON_DROP_RPC, RpcTarget.All, interactor);
             Drop(interactor);
         }
-        else if(Status == BoxStatus.PickedUp && interactor.IsHolding(this)==false)
+        else if(Status == BoxStatus.PickedUp && interactor!=_currentInteractor)
         {
             Drop(_currentInteractor);
             PickUp(interactor);
         }
     }
 
-    private void PickUp(PlayerInteraction interactor)
+    public void PickUp(PlayerInteraction interactor)
     {
         Status = BoxStatus.PickedUp;
         transform.SetParent(interactor.holdPoint);
@@ -73,7 +73,7 @@ public class PickupBox : BoxBase
         interactor.HoldBox(this);
     }
 
-    private void Drop(PlayerInteraction interactor)
+    public void Drop(PlayerInteraction interactor)
     {
         Status = BoxStatus.Idle;
         transform.SetParent(originalParent);
@@ -94,7 +94,8 @@ public class PickupBox : BoxBase
         else
         {
             taken = (bool)stream.ReceiveNext();
-            _position = (Vector3)stream.ReceiveNext();
+            //_position = (Vector3)stream.ReceiveNext();
+            transform.position = (Vector3)stream.ReceiveNext();
             originalRigidBody.isKinematic= (bool)stream.ReceiveNext();
         }
     }

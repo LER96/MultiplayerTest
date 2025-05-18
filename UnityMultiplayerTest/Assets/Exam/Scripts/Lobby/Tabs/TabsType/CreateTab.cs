@@ -15,7 +15,7 @@ public class CreateTab : LobbyTab
     [SerializeField] Button _createRoom;
     
     [SerializeField] private int _numberOfPlayers;
-    private int _timerForRound = 1;
+    [SerializeField] private int _timerForRound = 1;
     private bool _numberOfPlayersCheck;
 
     public Button CreateRoomButton => _createRoom;
@@ -77,7 +77,7 @@ public class CreateTab : LobbyTab
             _numberOfPlayersCheck = false;
         }
     }
-    
+
     void SetRoundsDropDown(TMP_Dropdown dropdown)
     {
         int i = dropdown.value;
