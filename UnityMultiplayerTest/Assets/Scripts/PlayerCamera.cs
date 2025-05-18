@@ -22,7 +22,6 @@ public class PlayerCamera : MonoBehaviourPunCallbacks
 
     public void SetControlRotation(Vector2 controlRotation)
     {
-        Debug.Log(controlRotation);
         // Y Rotation (Yaw Rotation)
         Quaternion rigTargetLocalRotation = Quaternion.Euler(0.0f, controlRotation.y, 0.0f);
 

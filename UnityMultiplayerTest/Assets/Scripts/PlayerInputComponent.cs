@@ -62,7 +62,7 @@ public class PlayerInputComponent : MonoBehaviourPunCallbacks
         {
             if (myPlayerInteraction.Holding)
             {
-                myPlayerInteraction.TryDrop();
+                myPlayerInteraction.TryPass();
             }
             else
             {

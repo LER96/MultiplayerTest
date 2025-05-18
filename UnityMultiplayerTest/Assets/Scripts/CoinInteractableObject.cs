@@ -36,10 +36,12 @@ public class CoinInteractableObject : MonoBehaviourPunCallbacks, IPunObservable
     {
         if(other.CompareTag("Player"))
         {
+            
             PlayerInteraction interaction = other.GetComponent<PlayerInteraction>();
             if (interaction != null)
             {
-                OnInteract(interaction);
+                if (interaction.View.IsMine)
+                    OnInteract(interaction);
             }
         }
     }

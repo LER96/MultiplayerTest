@@ -1,6 +1,11 @@
-using Photon.Pun;
-using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using TMPro;
+using UnityEngine.UI;
+using Photon.Realtime;
+
 
 public class PlayerInteraction : MonoBehaviourPunCallbacks
 {
@@ -22,22 +27,18 @@ public class PlayerInteraction : MonoBehaviourPunCallbacks
         _view = GetComponent<PhotonView>();
         if (_view.IsMine)
             GameManager.Instance.RegisterPlayer(this);
+        _view.Owner.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { "Score", 0 } });
     }
 
     public void OnEnterPickupZone(PickupBox box)
     {
-        if (heldBox is null)
+        if (heldBox == null)
         {
             nearbyBox = box;
             UIManager.Instance.ShowBoxMenu(true);
         }
     }
-
-    public void OnEnterDeliverZone(PickupBox box)
-    {
-        UIManager.Instance.ShowBoxMenu(true);
-    }
-
+    
     public void OnExitPickupZone(PickupBox box)
     {
         if (IsHolding(box)) return;
@@ -52,15 +53,24 @@ public class PlayerInteraction : MonoBehaviourPunCallbacks
             if (nearbyBox.taken == false)
             {
                 //nearbyBox.Interact(this);
-                nearbyBox.View.RPC("Interact", RpcTarget.AllViaServer, _view.ViewID);
-                UIManager.Instance.ShowButtonsForState(true);
+                if (_view.IsMine)
+                {
+                    nearbyBox.View.RPC("Interact", RpcTarget.AllViaServer, _view.ViewID);
+                    UIManager.Instance.ShowButtonsForState(true);
+                }
             }
-            else
-            {
-                //nearbyBox.Interact(this);
-                nearbyBox.View.RPC("Interact", RpcTarget.AllViaServer, _view.ViewID);
-                UIManager.Instance.ShowGive(true);
-            }
+        }
+    }
+
+    public void TryPass()
+    {
+        if(nearbyBox.Interactables.Count>0)
+        {
+            nearbyBox.Pass(nearbyBox.CurrentHolder, nearbyBox.Interactables[1]);
+        }
+        else
+        {
+            TryDrop();
         }
     }
 
@@ -78,7 +88,7 @@ public class PlayerInteraction : MonoBehaviourPunCallbacks
     public void AddCoins(int amount)
     {
         currentScore += amount;
-        View.Owner.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { "Score", currentScore } });
+        _view.Owner.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { "Score", currentScore } });
         UIManager.Instance.UpdateScore(currentScore);
     }
 }

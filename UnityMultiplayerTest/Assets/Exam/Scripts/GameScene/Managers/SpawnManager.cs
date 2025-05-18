@@ -109,6 +109,7 @@ public class SpawnManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void GameEnded(PhotonMessageInfo info)
     {
+        hasGameStarted = false;
         _localPlayerController.CanWalk = false;
     }
 

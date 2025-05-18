@@ -49,8 +49,8 @@ public class UIManager : MonoBehaviourPunCallbacks
     private void Start()
     {
         var myPlayerInteraction = GameManager.Instance.MyPlayerInteraction;
-        pickupButton.onClick.AddListener(myPlayerInteraction.TryPickup);
-        dropButton.onClick.AddListener(myPlayerInteraction.TryDrop);
+        //pickupButton.onClick.AddListener(myPlayerInteraction.TryPickup);
+        //dropButton.onClick.AddListener(myPlayerInteraction.TryDrop);
     }
 
     private void Update()

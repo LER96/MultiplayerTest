@@ -15,6 +15,8 @@ public class PickupBox : BoxBase
     
     [SerializeField]private Rigidbody originalRigidBody;
     [SerializeField] private PlayerInteraction _currentInteractor;
+    
+    [SerializeField] List<PlayerInteraction> _interactables = new List<PlayerInteraction>();
     public bool taken;
 
     private PhotonView _view;
@@ -22,6 +24,9 @@ public class PickupBox : BoxBase
 
     public PhotonView View=> _view;
     public PlayerInteraction CurrentHolder=> _currentInteractor;
+    public List<PlayerInteraction> Interactables => _interactables;
+    
+    
     private void Awake()
     {
         originalParent = transform.parent;
@@ -31,6 +36,32 @@ public class PickupBox : BoxBase
     {
         _view = GetComponent<PhotonView>();
     }
+    
+    public void AddInteractable(PlayerInteraction interactor)
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if (!_interactables.Contains(interactor))
+            {
+                _interactables.Add(interactor);
+            }
+        }
+    }
+
+    public void RemoveInteractable(PlayerInteraction interactor)
+    {
+        if (_interactables.Contains(interactor))
+        {
+            _interactables.Remove(interactor);
+        }
+    }
+
+    public void Pass(PlayerInteraction holder, PlayerInteraction interactor)
+    {
+       Drop(holder);
+       PickUp(interactor);
+    }
+    
 
     //private void Update()
     //{
@@ -41,9 +72,9 @@ public class PickupBox : BoxBase
     //}
 
     [PunRPC]
-    public override void Interact(int playerViewID)
+    public override void Interact(int id)
     {
-        PhotonView playerView = PhotonView.Find(playerViewID);
+        PhotonView playerView= PhotonView.Find(id);
         PlayerInteraction interactor = playerView.GetComponent<PlayerInteraction>();
         if (Status == BoxStatus.Idle && taken==false)
         {
@@ -52,11 +83,6 @@ public class PickupBox : BoxBase
         else if (Status == BoxStatus.PickedUp && interactor.IsHolding(this))
         {
             Drop(interactor);
-        }
-        else if(Status == BoxStatus.PickedUp && interactor!=_currentInteractor)
-        {
-            Drop(_currentInteractor);
-            PickUp(interactor);
         }
     }
 
