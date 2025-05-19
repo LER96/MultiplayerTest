@@ -104,7 +104,7 @@ public class Character : MonoBehaviourPunCallbacks, IPunObservable, IPunInstanti
         if (!_photonView.IsMine)
         {
             transform.position = Vector3.Lerp(transform.position, _currentPos, .1f);
-            transform.rotation = Quaternion.Lerp(transform.rotation, _currentRotation, Time.deltaTime);
+            transform.rotation = Quaternion.Lerp(transform.rotation, _currentRotation, .1f);
 
         }
     }
@@ -268,6 +268,7 @@ public class Character : MonoBehaviourPunCallbacks, IPunObservable, IPunInstanti
         {
             Controller.playerCamera = camera;
             Controller.playerInput = input;
+            Debug.Log(input);
             Controller.playerInput.View = _photonView;
         }
     }

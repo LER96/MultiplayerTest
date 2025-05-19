@@ -11,8 +11,8 @@ public class PlayerInteraction : MonoBehaviourPunCallbacks
 {
     public Transform holdPoint;
     public float interactRange = 2f;
-    private PickupBox heldBox;
-    private PickupBox nearbyBox;
+    [SerializeField] private PickupBox heldBox;
+    [SerializeField] private PickupBox nearbyBox;
     private int currentScore = 0;
     private PhotonView _view;
     
@@ -25,17 +25,19 @@ public class PlayerInteraction : MonoBehaviourPunCallbacks
     private void Start()
     {
         _view = GetComponent<PhotonView>();
-        if (_view.IsMine)
-            GameManager.Instance.RegisterPlayer(this);
+        GameManager.Instance.View.RPC("RegisterPlayer", RpcTarget.AllBuffered, _view.ViewID);
         _view.Owner.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { "Score", 0 } });
     }
 
     public void OnEnterPickupZone(PickupBox box)
     {
-        if (heldBox == null)
+        if (_view.IsMine)
         {
-            nearbyBox = box;
-            UIManager.Instance.ShowBoxMenu(true);
+            if (heldBox == null)
+            {
+                nearbyBox = box;
+                UIManager.Instance.ShowBoxMenu(true);
+            }
         }
     }
     
@@ -64,9 +66,9 @@ public class PlayerInteraction : MonoBehaviourPunCallbacks
 
     public void TryPass()
     {
-        if(nearbyBox.Interactables.Count>0)
+        if (heldBox.Interactables.Count > 1)
         {
-            nearbyBox.Pass(nearbyBox.CurrentHolder, nearbyBox.Interactables[1]);
+            heldBox.Pass(heldBox.CurrentHolder, heldBox.Interactables[1]);
         }
         else
         {
@@ -79,7 +81,7 @@ public class PlayerInteraction : MonoBehaviourPunCallbacks
         if (heldBox != null)
         {
             //heldBox.Interact(this);
-            nearbyBox.View.RPC("Interact", RpcTarget.AllViaServer, _view.ViewID);
+            heldBox .View.RPC("Interact", RpcTarget.AllViaServer, _view.ViewID);
             UIManager.Instance.ShowButtonsForState(false);
             UIManager.Instance.HideEverything();
         }

@@ -1245,6 +1245,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   holdPoint: {fileID: 6436386518575447256}
   interactRange: 2
+  heldBox: {fileID: 0}
+  nearbyBox: {fileID: 0}
 --- !u!114 &6523013360782568853
 MonoBehaviour:
   m_ObjectHideFlags: 0

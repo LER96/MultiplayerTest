@@ -23,7 +23,7 @@ public class PickupBox : BoxBase
     private Vector3 _position;
 
     public PhotonView View=> _view;
-    public PlayerInteraction CurrentHolder=> _currentInteractor;
+    public PlayerInteraction CurrentHolder{get=> _currentInteractor; set=>_currentInteractor=value;}
     public List<PlayerInteraction> Interactables => _interactables;
     
     
@@ -36,15 +36,12 @@ public class PickupBox : BoxBase
     {
         _view = GetComponent<PhotonView>();
     }
-    
+
     public void AddInteractable(PlayerInteraction interactor)
     {
-        if (PhotonNetwork.IsMasterClient)
+        if (!_interactables.Contains(interactor))
         {
-            if (!_interactables.Contains(interactor))
-            {
-                _interactables.Add(interactor);
-            }
+            _interactables.Add(interactor);
         }
     }
 
@@ -58,18 +55,18 @@ public class PickupBox : BoxBase
 
     public void Pass(PlayerInteraction holder, PlayerInteraction interactor)
     {
-       Drop(holder);
-       PickUp(interactor);
+        if (holder == interactor)
+            return;
+        Drop(holder);
+        View.RPC("RPC_AttachTo", RpcTarget.AllBuffered, interactor.View.ViewID);
     }
-    
 
-    //private void Update()
-    //{
-    //    if (!_view.IsMine)
-    //        transform.position = Vector3.Lerp(transform.position, _position, .1f);
 
-        
-    //}
+    private void Update()
+    {
+        if (!_view.IsMine)
+            transform.position = Vector3.Lerp(transform.position, _position, .1f);
+    }
 
     [PunRPC]
     public override void Interact(int id)
@@ -86,6 +83,15 @@ public class PickupBox : BoxBase
         }
     }
 
+    [PunRPC]
+    public void RPC_AttachTo(int targetPlayerViewID)
+    {
+        PhotonView targetView = PhotonView.Find(targetPlayerViewID);
+        if (targetView == null) return;
+        PlayerInteraction player = targetView.GetComponent<PlayerInteraction>();
+        PickUp(player);
+    }
+
     public void PickUp(PlayerInteraction interactor)
     {
         Status = BoxStatus.PickedUp;
@@ -95,7 +101,7 @@ public class PickupBox : BoxBase
         originalRigidBody.isKinematic = true;
         _currentInteractor = interactor;
         taken = true;
-        interactor.View.RequestOwnership();
+        //interactor.View.RequestOwnership();
         interactor.HoldBox(this);
     }
 
@@ -120,8 +126,8 @@ public class PickupBox : BoxBase
         else
         {
             taken = (bool)stream.ReceiveNext();
-            //_position = (Vector3)stream.ReceiveNext();
-            transform.position = (Vector3)stream.ReceiveNext();
+            _position = (Vector3)stream.ReceiveNext();
+            //transform.position = (Vector3)stream.ReceiveNext();
             originalRigidBody.isKinematic= (bool)stream.ReceiveNext();
         }
     }

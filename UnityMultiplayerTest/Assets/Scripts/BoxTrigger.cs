@@ -15,12 +15,13 @@ public class BoxTrigger : MonoBehaviourPunCallbacks
             
             if (interaction != null && !pickupBox.taken)
             {
+                pickupBox.AddInteractable(interaction);
                 interaction.OnEnterPickupZone(pickupBox);
             }
             else if (interaction != null && pickupBox.taken)
             {
-                UIManager.Instance.ShowGive(true);
                 pickupBox.AddInteractable(interaction);
+                UIManager.Instance.ShowGive(true);
             }
         }
     }
@@ -31,6 +32,7 @@ public class BoxTrigger : MonoBehaviourPunCallbacks
             interaction = other.GetComponent<PlayerInteraction>();
             if (interaction != null)
             {
+                UIManager.Instance.ShowGive(false);
                 pickupBox.RemoveInteractable(interaction);
                 interaction.OnExitPickupZone(pickupBox);
             }

@@ -49,6 +49,8 @@ MonoBehaviour:
   - GameEnded
   - AddInteractable
   - RemoveInteractable
+  - RPC_AttachTo
+  - RegisterPlayer
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

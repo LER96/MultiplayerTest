@@ -42,13 +42,12 @@ public class UIManager : MonoBehaviourPunCallbacks
             Destroy(gameObject);
             return;
         }
-        _roomtimer = (int)PhotonNetwork.CurrentRoom.CustomProperties["Time"];
         Instance = this;
     }
 
     private void Start()
     {
-        var myPlayerInteraction = GameManager.Instance.MyPlayerInteraction;
+        //var myPlayerInteraction = GameManager.Instance.MyPlayerInteraction;
         //pickupButton.onClick.AddListener(myPlayerInteraction.TryPickup);
         //dropButton.onClick.AddListener(myPlayerInteraction.TryDrop);
     }
@@ -59,6 +58,11 @@ public class UIManager : MonoBehaviourPunCallbacks
         {
             UpdateTimer();
         }
+    }
+
+    public void SetTimer()
+    {
+        _roomtimer = (int)PhotonNetwork.CurrentRoom.CustomProperties["Time"];
     }
 
     void UpdateTimer()
@@ -130,8 +134,8 @@ public class UIManager : MonoBehaviourPunCallbacks
 
     public void ShowGive(bool give)
     {
-        ShowDropButton(!give);
-        ShowPickupButton(!give);
+        //ShowDropButton(!give);
+        //ShowPickupButton(!give);
         ShowGiveButton(give);
     }
 

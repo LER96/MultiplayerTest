@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
-    private bool _gameStarted;
+    [SerializeField] private PlayerInteraction _playerInteraction;
+    private PhotonView _view;
 
     public static GameManager Instance { get; private set; }
-    public bool GameStarted => _gameStarted;
-
-    public PlayerInteraction MyPlayerInteraction { get; private set; }
+    public PhotonView View => _view;
+    public PlayerInteraction MyPlayerInteraction {get=> _playerInteraction; set=> _playerInteraction = value; }
 
     
     private void Awake()
@@ -20,11 +20,18 @@ public class GameManager : MonoBehaviourPunCallbacks
             Destroy(gameObject);
             return;
         }
+        _view= GetComponent<PhotonView>();
         Instance = this;
     }
     
-    public void RegisterPlayer(PlayerInteraction player)
+    [PunRPC]
+    public void RegisterPlayer(int id)
     {
-        MyPlayerInteraction = player;
+        PhotonView view = PhotonView.Find(id);
+        if (view.IsMine)
+        {
+            PlayerInteraction player = view.GetComponent<PlayerInteraction>();
+            _playerInteraction = player;
+        }
     }
 }

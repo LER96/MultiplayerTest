@@ -60,6 +60,7 @@ public class PlayerInputComponent : MonoBehaviourPunCallbacks
         var myPlayerInteraction = GameManager.Instance.MyPlayerInteraction;
         if (isPressed)
         {
+
             if (myPlayerInteraction.Holding)
             {
                 myPlayerInteraction.TryPass();

@@ -101,6 +101,7 @@ public class SpawnManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void GameStarted(PhotonMessageInfo info)
     {
+        UIManager.Instance.SetTimer();
         hasGameStarted = true;
         _localPlayerController.CanWalk = true;
         _isCountingForStartGame = false;
@@ -179,13 +180,13 @@ public class SpawnManager : MonoBehaviourPunCallbacks
                          spawnPoint.transform.rotation).GetComponent<Character>();
 
 
+        spawnPoint.ActiveComponents();
         _localPlayerController.SetCharacterVariables(spawnPoint.PlayerInput, spawnPoint.Camera);
         //_localPlayerController = player.GetComponent<Character>();
 
 
         _localPlayerController.StartingPoint(spawnPoint.transform.position);
         AddPlayerController(_localPlayerController);
-        spawnPoint.ActiveComponents();
     }
 
     //Need to check if the property of the player is match to the spawn state
