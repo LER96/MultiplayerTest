@@ -47,7 +47,7 @@ public class CreateTab : LobbyTab
         //If there isn't a room with the same name, then cre
         if (sameName == false && _numberOfPlayers >= 1 && _timerForRound > 1) 
         {
-            PhotonNetwork.CreateRoom(_inputField.text, new RoomOptions() { MaxPlayers = _numberOfPlayers, EmptyRoomTtl = 3000, IsVisible = true, IsOpen = true, CleanupCacheOnLeave = false},null);
+            PhotonNetwork.CreateRoom(_inputField.text, new RoomOptions() { MaxPlayers = _numberOfPlayers, EmptyRoomTtl = 3000, IsVisible = true, IsOpen = true},null);
             LobbyManager.Instance.JoinTabWindow.JoinList=_inputField.text;
             
         }
