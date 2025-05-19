@@ -45,9 +45,9 @@ public class CreateTab : LobbyTab
         }
 
         //If there isn't a room with the same name, then cre
-        if (sameName == false)
+        if (sameName == false && _numberOfPlayers >= 1 && _timerForRound > 1) 
         {
-            PhotonNetwork.CreateRoom(_inputField.text, new RoomOptions() { MaxPlayers = _numberOfPlayers, EmptyRoomTtl = 2000 },null);
+            PhotonNetwork.CreateRoom(_inputField.text, new RoomOptions() { MaxPlayers = _numberOfPlayers, EmptyRoomTtl = 3000, IsVisible = true, IsOpen = true, CleanupCacheOnLeave = false},null);
             LobbyManager.Instance.JoinTabWindow.JoinList=_inputField.text;
             
         }
@@ -80,8 +80,16 @@ public class CreateTab : LobbyTab
 
     void SetRoundsDropDown(TMP_Dropdown dropdown)
     {
+       
         int i = dropdown.value;
-        _timerForRound = int.Parse(dropdown.options[i].text);
+        if (i==0)
+        {
+            _timerForRound = 1;
+        }
+        else
+        {
+            _timerForRound = int.Parse(dropdown.options[i].text);
+        }
     }
     
     public override void OnCreateRoomFailed(short returnCode, string message)

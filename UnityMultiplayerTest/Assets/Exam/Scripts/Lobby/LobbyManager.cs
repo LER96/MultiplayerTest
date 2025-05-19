@@ -195,10 +195,27 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             }
         }
     }
-
-    //Replace masterClient
+    
     public override void OnMasterClientSwitched(Player newMasterClient)
     {
         base.OnMasterClientSwitched(newMasterClient);
+    }
+    
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        if (cause == DisconnectCause.Exception || cause == DisconnectCause.ClientTimeout)
+        {
+            StartCoroutine(TryRejoin());
+        }
+    }
+
+    private IEnumerator TryRejoin()
+    {
+        while (!PhotonNetwork.IsConnectedAndReady)
+            yield return null;
+
+
+        string roomName = (string)PhotonNetwork.LocalPlayer.CustomProperties["RoomName"];
+        PhotonNetwork.RejoinRoom(roomName);
     }
 }

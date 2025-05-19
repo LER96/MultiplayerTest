@@ -27,6 +27,7 @@ public class PlayerInteraction : MonoBehaviourPunCallbacks
         _view = GetComponent<PhotonView>();
         GameManager.Instance.View.RPC("RegisterPlayer", RpcTarget.AllBuffered, _view.ViewID);
         _view.Owner.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { "Score", 0 } });
+        _view.Owner.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { "RoomName", PhotonNetwork.CurrentRoom.Name } });
     }
 
     public void OnEnterPickupZone(PickupBox box)
